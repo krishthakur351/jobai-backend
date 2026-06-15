@@ -103,7 +103,11 @@ public class SecurityConfig {
                 new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of(
+                        "http://localhost:5173",
+                        "https://jobai-frontend-dusky.vercel.app",
+                        "https://jobai-frontend-8r3vpzan7-krish-thakur-s-projects.vercel.app"
+                )
         );
 
         configuration.setAllowedMethods(
