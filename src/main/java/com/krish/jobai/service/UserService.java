@@ -42,6 +42,10 @@ public class UserService {
         Optional<User> optionalUser =
                 userRepository.findByEmail(email);
 
+        // DEBUG
+        System.out.println("Login attempt with email: " + email);
+        System.out.println("User found? " + optionalUser.isPresent());
+
         // Check if user exists
         if(optionalUser.isEmpty()) {
             return "User not found";
