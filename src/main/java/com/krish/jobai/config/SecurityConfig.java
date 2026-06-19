@@ -50,6 +50,12 @@ public class SecurityConfig {
                 // AUTHORIZATION
                 .authorizeHttpRequests(auth -> auth
 
+                        // ALLOW ALL PREFLIGHT REQUESTS
+                        .requestMatchers(
+                                HttpMethod.OPTIONS,
+                                "/**"
+                        ).permitAll()
+
                         // PUBLIC APIs
                         .requestMatchers(
                                 "/api/users/register",
@@ -102,16 +108,22 @@ public class SecurityConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
+        configuration.setAllowedOriginPatterns(
                 List.of(
                         "http://localhost:5173",
                         "https://jobai-frontend-dusky.vercel.app",
-                        "https://jobai-frontend-8r3vpzan7-krish-thakur-s-projects.vercel.app"
+                        "https://*.vercel.app"
                 )
         );
 
         configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "OPTIONS"
+                )
         );
 
         configuration.setAllowedHeaders(
