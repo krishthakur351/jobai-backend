@@ -4,7 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import com.krish.jobai.resume.ResumeController;
+import com.krish.jobai.resume.Resume;
+import com.krish.jobai.resume.ResumeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,9 +26,10 @@ import org.springframework.web.client.RestTemplate;
 import com.krish.jobai.dto.ChatRequest;
 @RestController
 @RequestMapping("/api/ai")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin("*")
 public class AIController {
-
+    @Autowired
+    private ResumeRepository resumeRepository;
     @Value("${gemini.api.key}")
     private String API_KEY;
     @PostMapping("/chat")
@@ -43,18 +46,25 @@ public class AIController {
                     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
                             + API_KEY;
 
+            Resume resume = resumeRepository.findByEmail(email);
+
+            if (resume == null) {
+                return ResponseEntity.badRequest()
+                        .body("Please upload resume first.");
+            }
+
             String prompt =
                     "You are an AI Career Assistant.\n\n" +
 
                             "User Resume:\n" +
-                            ResumeController.latestResume +
+                            resume.getResumeText() +
 
                             "\n\nUser Question:\n" +
                             question +
 
                             "\n\nAnswer based on the user's resume whenever possible.";
 
-            JsonObject textPart = new JsonObject();
+                    JsonObject textPart = new JsonObject();
             textPart.addProperty("text", prompt);
 
             JsonArray parts = new JsonArray();

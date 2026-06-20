@@ -27,8 +27,6 @@ import java.util.List;
 @CrossOrigin("*")
 public class ResumeController {
 
-    public static String latestResume = "";
-
     @Value("${gemini.api.key}")
     private String API_KEY;
 
@@ -84,8 +82,6 @@ public class ResumeController {
                     detectedSkills.add(skill);
                 }
             }
-
-            latestResume = resumeText;
 
             document.close();
 
@@ -230,45 +226,7 @@ public class ResumeController {
         }
     }
 
-    @GetMapping("/skills")
-    public ResponseEntity<?> getSkills() {
 
-        List<String> skills =
-                new ArrayList<>();
-
-        String text =
-                latestResume.toLowerCase();
-
-        if (text.contains("java")) {
-            skills.add("Java");
-        }
-
-        if (text.contains("spring")) {
-            skills.add("Spring Boot");
-        }
-
-        if (text.contains("react")) {
-            skills.add("React");
-        }
-
-        if (text.contains("mysql")) {
-            skills.add("MySQL");
-        }
-
-        if (text.contains("javascript")) {
-            skills.add("JavaScript");
-        }
-
-        if (text.contains("python")) {
-            skills.add("Python");
-        }
-
-        if (text.contains("git")) {
-            skills.add("Git");
-        }
-
-        return ResponseEntity.ok(skills);
-    }
     // ==============================
     // GET ALL RESUMES (ADMIN)
     // ==============================
