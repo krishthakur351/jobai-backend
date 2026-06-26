@@ -108,13 +108,14 @@ public class SecurityConfig {
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(
-                List.of(
-                        "http://localhost:5173",
-                        "https://jobai-frontend-dusky.vercel.app",
-                        "https://*.vercel.app"
-                )
-        );
+        // ✅ Add all frontend + backend domains you use
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",                  // local dev
+                "https://jobai-frontend-dusky.vercel.app", // your deployed frontend
+                "https://jobai-frontend.vercel.app",       // alternate Vercel domain
+                "https://*.vercel.app",                    // wildcard for Vercel previews
+                "https://*.onrender.com"                   // backend Render domain
+        ));
 
         configuration.setAllowedMethods(
                 List.of(
