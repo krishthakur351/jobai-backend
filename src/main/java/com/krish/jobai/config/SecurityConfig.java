@@ -127,9 +127,17 @@ public class SecurityConfig {
         );
 
         configuration.setAllowedHeaders(
-                List.of("*")
+                List.of(
+                        "Authorization",
+                        "Content-Type",
+                        "Accept",
+                        "Origin"
+                )
         );
 
+        configuration.setExposedHeaders(
+                List.of("Authorization")
+        );
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
