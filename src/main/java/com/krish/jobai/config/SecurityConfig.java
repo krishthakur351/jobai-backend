@@ -27,7 +27,7 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Bean
+    /*@Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http
     ) throws Exception {
@@ -101,6 +101,49 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+     */
+
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                // Disable CSRF
+                .csrf(csrf -> csrf.disable())
+                // Enable CORS
+                .cors(Customizer.withDefaults())
+                // Stateless session
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Authorization rules
+                .authorizeHttpRequests(auth -> auth
+                        // Allow all preflight requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Public APIs
+                        .requestMatchers(
+                                "/",
+                                "/api/users/register",
+                                "/api/users/login",
+                                "/api/resume/**",
+                                "/api/ai/**"
+                        ).permitAll()
+                        // Job view (open GET for everyone)
+                        .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
+                        // Admin only for job management
+                        .requestMatchers(HttpMethod.POST, "/api/jobs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasRole("ADMIN")
+                        // Everything else requires authentication
+                        .anyRequest().authenticated()
+                )
+                // Disable basic auth popup
+                .httpBasic(httpBasic -> httpBasic.disable());
+
+        // JWT filter
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
