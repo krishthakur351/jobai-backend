@@ -116,25 +116,20 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        // Allow all preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Public APIs (no authentication required)
                         .requestMatchers(
-                                "/",
                                 "/api/users/register",
                                 "/api/users/login",
                                 "/api/resume/**",
                                 "/api/ai/**"
                         ).permitAll()
-                        // Jobs: anyone can view
                         .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
-                        // Admin only for job management
                         .requestMatchers(HttpMethod.POST, "/api/jobs/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasRole("ADMIN")
-                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
+
 
                 // Disable basic auth popup
                 .httpBasic(httpBasic -> httpBasic.disable());
