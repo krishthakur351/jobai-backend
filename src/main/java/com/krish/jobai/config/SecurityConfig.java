@@ -118,7 +118,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Allow all preflight requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Public APIs
+                        // Public APIs (no authentication required)
                         .requestMatchers(
                                 "/",
                                 "/api/users/register",
@@ -126,7 +126,7 @@ public class SecurityConfig {
                                 "/api/resume/**",
                                 "/api/ai/**"
                         ).permitAll()
-                        // Job view (open GET for everyone)
+                        // Jobs: anyone can view
                         .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
                         // Admin only for job management
                         .requestMatchers(HttpMethod.POST, "/api/jobs/**").hasRole("ADMIN")
@@ -135,6 +135,7 @@ public class SecurityConfig {
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
+
                 // Disable basic auth popup
                 .httpBasic(httpBasic -> httpBasic.disable());
 
